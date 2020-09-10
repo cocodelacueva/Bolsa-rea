@@ -1,0 +1,49 @@
+{
+  "ultimoPrecio": 48.5,
+  "variacion": -0.41,
+  "apertura": 47.6,
+  "maximo": 49.3,
+  "minimo": 47.6,
+  "fechaHora": "2020-09-08T15:30:02.2761515-03:00",
+  "tendencia": "sube",
+  "cierreAnterior": 48.7,
+  "montoOperado": 95925.25,
+  "volumenNominal": 1963,
+  "precioPromedio": 0.0,
+  "moneda": "peso_Argentino",
+  "precioAjuste": 0.0,
+  "interesesAbiertos": 0.0,
+  "puntas": [
+    {
+      "cantidadCompra": 0.0,
+      "precioCompra": 0.0,
+      "precioVenta": 49.45,
+      "cantidadVenta": 11.0
+    },
+    {
+      "cantidadCompra": 0.0,
+      "precioCompra": 0.0,
+      "precioVenta": 50.0,
+      "cantidadVenta": 20.0
+    },
+    {
+      "cantidadCompra": 0.0,
+      "precioCompra": 0.0,
+      "precioVenta": 50.3,
+      "cantidadVenta": 94.0
+    },
+    {
+      "cantidadCompra": 0.0,
+      "precioCompra": 0.0,
+      "precioVenta": 51.0,
+      "cantidadVenta": 2.0
+    },
+    {
+      "cantidadCompra": 0.0,
+      "precioCompra": 0.0,
+      "precioVenta": 52.0,
+      "cantidadVenta": 34.0
+    }
+  ],
+  "cantidadOperaciones": 26
+}
