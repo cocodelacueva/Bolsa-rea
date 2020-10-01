@@ -42,7 +42,7 @@ function App() {
       <ul>
         {simbolos.map(simbolo => (
           <li key={simbolo.simbolo}>
-            AR$ {simbolo.ultimoPrecio} - {simbolo.tendencia}
+            {simbolo.simbolo} - AR$ {simbolo.ultimoPrecio} - {simbolo.tendencia}
           </li>
         ))}
       </ul>
