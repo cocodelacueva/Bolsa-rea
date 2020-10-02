@@ -1,53 +1,34 @@
 import React from 'react';
-import { db } from './firebase'
-
+import { DataContext } from './context/DataProvider'
+import Login from './components/login'
+import Simbolos from './components/simbolos'
+import Navbar from './components/navbar'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from "react-router-dom";
 
 function App() {
 
-  const [simbolos, setSimbolos] = React.useState([]);
-  const [panel, setPanel] = React.useState('');
-  const [simbolosFecha, setSimbolosFecha] = React.useState('');
+  const {usuario} = React.useContext(DataContext)
 
-  React.useEffect(() => {
-    
-    const obtenerData = async () => {
-      try {
-        
-        const data = await db.collection('panel_general').orderBy("date", "desc").limit(1).get();        
-        
-        const arrayData = data.docs.map(doc => ( doc.data() ))
-        setSimbolos(arrayData[0].titulos);
-
-        setSimbolosFecha(arrayData[0].date)
-        setPanel(arrayData[0].name_panel)
-
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    obtenerData();
-
-  }, [] )
-
-  return (
-    <div className="app-wrapper">
-      <h2>
-        Panel: {panel}
-      </h2>
-      <p>
-        Fecha: {simbolosFecha}
-      </p>
-
-      <ul>
-        {simbolos.map(simbolo => (
-          <li key={simbolo.simbolo}>
-            {simbolo.simbolo} - AR$ {simbolo.ultimoPrecio} - {simbolo.tendencia}
-          </li>
-        ))}
-      </ul>
+  return usuario.activo !== null ? (
+    <Router>
+      <div className="inner-Wrapper">
+        <Navbar />
+        <Switch>
+          <Route component={Login} path="/login" exact/>
+          <Route component={Simbolos} path="/simbolos" exact/>
+          <Route component={Simbolos} path="/" exact/>
+        </Switch>
+      </div>
+    </Router>
+  ) : (
+    <div>
+      Loading...
     </div>
-  );
+  )
 }
 
 export default App;
