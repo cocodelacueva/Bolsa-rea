@@ -46,24 +46,64 @@ const DataProvider = (props) => {
         auth.signOut();
     }
 
-    const obtenerData = async ( panel='panel_general' ) => {
+    //obtener la data de local host, sino esta en local host hace un fetch a firebase
+    const obtenerData = async ( panelToFetch='panel_general' ) => {
         
-        setPanel(panel);
+        setPanel(panelToFetch);
 
-        try {  
-          const data = await db.collection(panel).orderBy("date", "desc").limit(1).get();        
-          
-          const arrayData = data.docs.map(doc => ( doc.data() ));
+        //busca en localhost
+        let oldData = localStorage.getItem(panelToFetch);
 
-          setSimbolos(arrayData[0].titulos);
-  
-          setSimbolosFecha(arrayData[0].date)
-          setPanelNombre(arrayData[0].name_panel)
-  
-        } catch (error) {
-          console.log(error);
+        if ( oldData ) {
+            //chequeamos si es muy vieja y hacemos un nuevo fetch
+
+            oldData = JSON.parse(oldData)
+            const now = new Date()
+            // compare the expiry time of the item with the current time
+            if (now.getTime() > oldData.expiry) {
+                // If the item is expired, delete the item from storage
+                localStorage.removeItem(panelToFetch);
+                // and fetchdata
+                fetchData(panelToFetch);
+            } else {
+                //si esta fresca retornamos:
+                
+                //seteamos estados
+                setSimbolos(oldData.value[0].titulos);
+                setSimbolosFecha(oldData.value[0].date);
+                setPanelNombre(oldData.value[0].name_panel);
+            }
+
+        } else {
+            //no esta en localhost, obtenemos la data
+            fetchData(panelToFetch);
         }
-      }
+    
+    }
+
+    const fetchData = async ( panel ) => {
+        try {  
+            const data = await db.collection(panel).orderBy("date", "desc").limit(1).get();        
+            
+            const arrayData = data.docs.map(doc => ( doc.data() ));
+  
+            //seteamos estados
+            setSimbolos(arrayData[0].titulos);
+            setSimbolosFecha(arrayData[0].date);
+            setPanelNombre(arrayData[0].name_panel);
+
+            //guardamos en localhost
+            const now = new Date();
+            const item = {
+                value: arrayData,
+                expiry: now.getTime() + 1000*60*30,
+            }
+            localStorage.setItem(panel, JSON.stringify(item));
+    
+          } catch (error) {
+            console.log(error);
+          }
+    };
 
 
     return (

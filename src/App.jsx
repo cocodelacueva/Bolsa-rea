@@ -6,27 +6,36 @@ import Navbar from './components/navbar'
 import {
   BrowserRouter as Router,
   Switch,
-  Route
+  Route,
+  Redirect
 } from "react-router-dom";
 
-function App() {
+function App(props) {
 
-  const {usuario} = React.useContext(DataContext)
+  const {usuario} = React.useContext(DataContext);
 
-  return usuario.activo !== null ? (
+  const RutaProtegida = ({component, path, ...rest}) => {
+    
+    if(usuario.estado){
+      return <Route component={component} path={path} {...rest} />
+    }else{
+      return <Redirect to="/login" {...rest} />
+    }
+  }
+
+  return usuario.estado !== null ? (
     <Router>
-      <div className="inner-Wrapper">
+      <div className="inner-wrapper">
         <Navbar />
         <Switch>
           <Route component={Login} path="/login" exact/>
-          <Route component={Simbolos} path="/simbolos" exact/>
-          <Route component={Simbolos} path="/" exact/>
+          <RutaProtegida component={Simbolos} path="/" exact/>
         </Switch>
       </div>
     </Router>
   ) : (
     <div>
-      Loading...
+      Cargando...
     </div>
   )
 }
