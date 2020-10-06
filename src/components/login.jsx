@@ -26,7 +26,7 @@ function Login(props) {
         if(usuario.estado){
             props.history.push('/')
         }
-    }, [usuario.estado])
+    }, [usuario.estado, props])
 
  return (
     <div className={classes.root}>
