@@ -96,7 +96,7 @@ const DataProvider = (props) => {
             const now = new Date();
             const item = {
                 value: arrayData,
-                expiry: now.getTime() + 1000*60*30,
+                expiry: now.getTime() + 1000*60*60,
             }
             localStorage.setItem(panel, JSON.stringify(item));
     

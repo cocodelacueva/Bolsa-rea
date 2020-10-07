@@ -75,14 +75,11 @@ function Simbolo(props) {
                         <Typography align="center" gutterBottom variant="body1" className={simbolo.tendencia==='baja' ? classes.colorRed : simbolo.tendencia === 'sube' ? classes.colorGreen : null}>
                             { simbolo.tendencia === 'baja' ? <ArrowDownwardIcon className={classes.svgSize} /> : simbolo.tendencia === 'sube' ? <ArrowUpwardIcon className={classes.svgSize} /> : <CheckIcon className={classes.svgSize} />}
                         </Typography>
-                        {simbolo.variacionDiaria ? (
-                            <>
-                            <Divider className={classes.marginInTheBottom} />
-                            <Typography variant="body1">
-                                <strong className={classes.uppercase}>Variación diaria:</strong> {simbolo.variacionDiaria}
-                            </Typography> 
-                            </>
-                        ) : null }
+                        
+                        <Divider className={classes.marginInTheBottom} />
+                        <Typography variant="body1">
+                            <strong className={classes.uppercase}>Variación diaria:</strong> {simbolo.variacionDiaria}
+                        </Typography> 
                         
                     </Grid>
                 </Grid>

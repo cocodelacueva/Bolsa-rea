@@ -2,6 +2,8 @@ import React from 'react';
 import Simbolo from './simbolo-detalle';
 import { DataContext } from '../context/DataProvider';
 import { makeStyles, ListItemText, ListItem, List, Typography, InputLabel, MenuItem, FormControl, Select, Container, Grid } from '@material-ui/core/';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -17,6 +19,18 @@ const useStyles = makeStyles((theme) => ({
     selectEmpty: {
       marginTop: theme.spacing(2),
     },
+    colorGreen : {
+        color: 'green',
+        fontSize: '1rem',
+    },
+    colorRed : {
+        color: 'red',
+        fontSize: '1em',
+    },
+    svgSize : {
+        fontSize: '1rem', 
+        marginLeft: '1rem'
+    }
   }));
   
 
@@ -42,6 +56,8 @@ function Simbolos() {
     const clickInSymbol = (index) => {
         
         setsimboloElegido(simbolos[index]);
+
+        window.scrollTo(0, 0);
         
     }
 
@@ -81,8 +97,9 @@ function Simbolos() {
                             <List aria-label="simbolos">
                                 {simbolos.map((simbolo, index) => (
                                     <ListItem button key={simbolo.simbolo} onClick={() => {clickInSymbol(index)}}>
-                                        <ListItemText>
-                                            {simbolo.simbolo} - AR$ {simbolo.ultimoPrecio} - {simbolo.tendencia}
+                                        <ListItemText className={simbolo.tendencia==='baja' ? classes.colorRed : simbolo.tendencia === 'sube' ? classes.colorGreen : null}>
+                                            {simbolo.simbolo} - AR$ {simbolo.ultimoPrecio}  
+                                            { simbolo.tendencia === 'baja' ? <ArrowDownwardIcon className={classes.svgSize} /> : simbolo.tendencia === 'sube' ? <ArrowUpwardIcon className={classes.svgSize} /> : null}
                                         </ListItemText>
                                     </ListItem>
                                 ))}
