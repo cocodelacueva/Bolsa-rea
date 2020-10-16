@@ -69,9 +69,9 @@ const DataProvider = (props) => {
                 //si esta fresca retornamos:
                 
                 //seteamos estados
-                setSimbolos(oldData.value[0].titulos);
-                setSimbolosFecha(oldData.value[0].date);
-                setPanelNombre(oldData.value[0].name_panel);
+                setSimbolos(oldData.value.titulos);
+                setSimbolosFecha(oldData.value.date);
+                setPanelNombre(oldData.value.name_panel);
             }
 
         } else {
@@ -83,19 +83,21 @@ const DataProvider = (props) => {
 
     const fetchData = async ( panel ) => {
         try {  
-            const data = await db.collection(panel).orderBy("date", "desc").limit(1).get();        
-            
-            const arrayData = data.docs.map(doc => ( doc.data() ));
+            //const data = await db.collection(panel).orderBy("date", "desc").limit(1).get();        
+            //const arrayData = data.docs.map(doc => ( doc.data() ));
+
+            const doc = await db.collection('cotizaciones').doc(panel).get();   
+            const data = doc.data();
   
             //seteamos estados
-            setSimbolos(arrayData[0].titulos);
-            setSimbolosFecha(arrayData[0].date);
-            setPanelNombre(arrayData[0].name_panel);
+            setSimbolos(data.titulos);
+            setSimbolosFecha(data.date);
+            setPanelNombre(data.name_panel);
 
             //guardamos en localhost
             const now = new Date();
             const item = {
-                value: arrayData,
+                value: data,
                 expiry: now.getTime() + 1000*60*60,
             }
             localStorage.setItem(panel, JSON.stringify(item));

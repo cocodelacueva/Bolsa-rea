@@ -11,12 +11,12 @@ const useStyles = makeStyles((theme) => ({
         paddingBottom: theme.spacing(6),
     },
     formControl: {
-    display: "block",
-      marginBottom: theme.spacing(5),
-      minWidth: 160,
+        display: "block",
+        marginBottom: theme.spacing(5),
+        minWidth: 160,
     },
     selectEmpty: {
-      marginTop: theme.spacing(2),
+        marginTop: theme.spacing(2),
     },
     colorGreen : {
         color: 'green',
@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
         fontSize: '1rem', 
         marginLeft: '1rem'
     }
+    
   }));
   
 
@@ -63,6 +64,7 @@ function Simbolos() {
     return usuario.estado ? (
             <div className={classes.wrapperSimbolos}>
                 <Container maxWidth="lg">
+                    
                     <Grid container direction="row-reverse">
                         
                         <Grid item xs={12} sm={7}>

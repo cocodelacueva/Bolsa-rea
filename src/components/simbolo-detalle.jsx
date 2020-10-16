@@ -114,9 +114,9 @@ function Simbolo(props) {
                             Moneda: { simbolo.moneda }
                         </Typography>
                     </Grid>
-                    <Grid item xs={6}>
+                    {/* <Grid item xs={6}>
                         <Button variant="contained" color="primary" size="small" onClick={handleDetalleBtn}>Ver gráfico</Button>
-                    </Grid>
+                    </Grid> */}
                 </Grid>
             </Paper>
 
