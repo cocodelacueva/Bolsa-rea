@@ -7,3 +7,4 @@ La base de firebase se retroalimenta de una api de invertironline, pero como esa
 ## Documentaciones
 
 * Firebase hosting: https://firebase.google.com/docs/hosting/quickstart?authuser=0
+* Chartsjs: https://github.com/jerairrest/react-chartjs-2

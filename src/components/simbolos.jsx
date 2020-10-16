@@ -5,7 +5,6 @@ import { makeStyles, ListItemText, ListItem, List, Typography, InputLabel, MenuI
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 
-
 const useStyles = makeStyles((theme) => ({
     wrapperSimbolos : {
         paddingTop: theme.spacing(6),
@@ -65,7 +64,8 @@ function Simbolos() {
             <div className={classes.wrapperSimbolos}>
                 <Container maxWidth="lg">
                     <Grid container direction="row-reverse">
-                        <Grid item xs={12} sm={6}>
+                        
+                        <Grid item xs={12} sm={7}>
                             <FormControl variant="outlined" className={classes.formControl}>
                                 <InputLabel id="demo-simple-select-outlined-label">Paneles</InputLabel>
                                 <Select
@@ -83,10 +83,9 @@ function Simbolos() {
                             {
                                 simboloElegido != null ? <Simbolo simbolo={simboloElegido} /> : null
                             }
-                            
-
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+
+                        <Grid item xs={12} sm={5}>
                             <Typography variant="h2" gutterBottom>
                                 {panelNombre}
                             </Typography>

@@ -3,6 +3,8 @@ import { makeStyles, Grid, Divider, Typography, Paper } from '@material-ui/core/
 import CheckIcon from '@material-ui/icons/Check';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import SimboloGrafico from './simbolo-grafico';
+import { Button } from '@material-ui/core/';
 
 const useStyles = makeStyles((theme) => ({
     paperWrapper : {
@@ -32,13 +34,26 @@ const useStyles = makeStyles((theme) => ({
 
 function Simbolo(props) {
     const classes = useStyles();
+    const simbolo = props.simbolo;
+    const [grafico, setGrafico] = React.useState(false);
 
+
+    React.useEffect(() => {
+        setGrafico(false)
+       
+    }, [props.simbolo, props])
+
+    
     if ( props.simbolo === null ) {
         return null;
-    } 
+    }
 
-    const simbolo = props.simbolo;
+    const handleDetalleBtn = () => {
+        setGrafico(true)
+    }
+
     
+
     return (
         <div>
             <Paper className={classes.paperWrapper} elevation={3}>
@@ -81,22 +96,37 @@ function Simbolo(props) {
                             <strong className={classes.uppercase}>Variación diaria:</strong> {simbolo.variacionDiaria}
                         </Typography> 
                         
+                       
                     </Grid>
                 </Grid>
 
                 <Divider className={classes.marginInTheBottom} />
-            
-                <Typography variant="body2">
-                    Fecha: { simbolo.fechaData.split('T')[0] }
-                </Typography>
-                <Typography variant="body2">
-                    Mercado: { simbolo.mercado }
-                </Typography>
-                <Typography variant="body2">
-                    Moneda: { simbolo.moneda }
-                </Typography>
+
+                <Grid container>
+                    <Grid item xs={6}>
+                        <Typography variant="body2">
+                            Fecha: { simbolo.fechaData.split('T')[0] }
+                        </Typography>
+                        <Typography variant="body2">
+                            Mercado: { simbolo.mercado }
+                        </Typography>
+                        <Typography variant="body2">
+                            Moneda: { simbolo.moneda }
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Button variant="contained" color="primary" size="small" onClick={handleDetalleBtn}>Ver gráfico</Button>
+                    </Grid>
+                </Grid>
             </Paper>
 
+            <Divider className={classes.marginInTheBottom} />
+            
+            { grafico ? (
+                <Paper>
+                    <SimboloGrafico simbolo={simbolo.simbolo} />
+                </Paper>
+            ) : null }
 
             {/* <Typography variant="body1">
                 Cantidad de Operaciones { simbolo.cantidadOperaciones }
