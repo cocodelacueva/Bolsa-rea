@@ -2,6 +2,8 @@ import React from 'react';
 import { DataContext } from './context/DataProvider'
 import Login from './components/login'
 import Simbolos from './components/simbolos'
+import NotFound from './components/notfound'
+import Dolares from './components/dolares'
 import Navbar from './components/navbar'
 import {
   BrowserRouter as Router,
@@ -30,6 +32,9 @@ function App(props) {
         <Switch>
           <Route component={Login} path="/login" exact/>
           <RutaProtegida component={Simbolos} path="/" exact/>
+          <RutaProtegida component={Simbolos} path="/simbolos" exact/>
+          <RutaProtegida component={Dolares} path="/dolares" exact/>
+          <Route component={NotFound}/>
         </Switch>
       </div>
     </Router>

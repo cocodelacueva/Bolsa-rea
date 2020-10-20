@@ -14,6 +14,7 @@ const DataProvider = (props) => {
     const [panel, setPanel] = React.useState(panelDefault);
     const [panelNombre, setPanelNombre] = React.useState(null);//es para escribir el nombre del panel
     const [simbolosFecha, setSimbolosFecha] = React.useState(null);
+    const [dolares, setDolares] = React.useState(null);
 
 
     React.useEffect(() => {
@@ -26,7 +27,10 @@ const DataProvider = (props) => {
         auth.onAuthStateChanged(user => {
             if(user){
                 setUsuario({uid: user.uid, email: user.email, estado: true, displayName: user.displayName});
+                //obtiene los datos de los simbolos
                 obtenerData(panel);
+                //obtiene los datos de los dolares
+                obtenerData('cotizacion_dolares', 'dolares');
             }else{
                 setUsuario({uid: null, email: null, estado: false, displayName: null});
             }
@@ -47,10 +51,12 @@ const DataProvider = (props) => {
     }
 
     //obtener la data de local host, sino esta en local host hace un fetch a firebase
-    const obtenerData = async ( panelToFetch='panel_general' ) => {
+    const obtenerData = async ( panelToFetch='panel_general', obdata='simbolos' ) => {
         
-        setPanel(panelToFetch);
-
+        if (obdata === 'simbolos') {
+            setPanel(panelToFetch);
+        }
+        
         //busca en localhost
         let oldData = localStorage.getItem(panelToFetch);
 
@@ -64,35 +70,43 @@ const DataProvider = (props) => {
                 // If the item is expired, delete the item from storage
                 localStorage.removeItem(panelToFetch);
                 // and fetchdata
-                fetchData(panelToFetch);
+                fetchData(panelToFetch, obdata);
             } else {
                 //si esta fresca retornamos:
+                if (obdata === 'simbolos') {
+                    //seteamos estados
+                    setSimbolos(oldData.value.titulos);
+                    setSimbolosFecha(oldData.value.date);
+                    setPanelNombre(oldData.value.name_panel);
+                } else {
+                    setDolares(oldData.value);
+                }
                 
-                //seteamos estados
-                setSimbolos(oldData.value.titulos);
-                setSimbolosFecha(oldData.value.date);
-                setPanelNombre(oldData.value.name_panel);
             }
 
         } else {
             //no esta en localhost, obtenemos la data
-            fetchData(panelToFetch);
+            fetchData(panelToFetch, obdata);
         }
     
     }
 
-    const fetchData = async ( panel ) => {
+    const fetchData = async ( panel, tofetch ) => {
+       
         try {  
-            //const data = await db.collection(panel).orderBy("date", "desc").limit(1).get();        
-            //const arrayData = data.docs.map(doc => ( doc.data() ));
-
             const doc = await db.collection('cotizaciones').doc(panel).get();   
             const data = doc.data();
   
-            //seteamos estados
-            setSimbolos(data.titulos);
-            setSimbolosFecha(data.date);
-            setPanelNombre(data.name_panel);
+            if (tofetch === 'simbolos') {
+                //seteamos estados
+                setSimbolos(data.titulos);
+                setSimbolosFecha(data.date);
+                setPanelNombre(data.name_panel);
+            } else {
+                
+                setDolares(data);
+            }
+            
 
             //guardamos en localhost
             const now = new Date();
@@ -110,7 +124,7 @@ const DataProvider = (props) => {
 
     return (
         <DataContext.Provider value={{
-            usuario, iniciarSesion, cerrarSesion, obtenerData, simbolos, panelNombre, simbolosFecha, panel
+            usuario, iniciarSesion, cerrarSesion, obtenerData, simbolos, panelNombre, simbolosFecha, panel, dolares
         }}>
            {props.children} 
         </DataContext.Provider>

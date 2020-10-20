@@ -15,6 +15,9 @@ const useStyles = makeStyles((theme) => ({
     title: {
       flexGrow: 1,
     },
+    mright : {
+        marginRight: theme.spacing(4)
+    }
 }));
 
 function Navbar() {
@@ -30,8 +33,17 @@ function Navbar() {
                 <Typography variant="h6" className={classes.title}>
                     <Link to="/">Bolsa Rea</Link>
                 </Typography>
+                
                 { usuario.estado ? (
-                    <Button endIcon={<ExitToAppIcon />} onClick={cerrarSesion} color="inherit">Cerrar Sesión</Button>
+                    <>
+                    <Button color="inherit">
+                        <Link to="/simbolos">Acciones</Link>
+                    </Button>
+                    <Button color="inherit" className={classes.mright}>
+                        <Link to="/dolares">Dolares</Link>
+                    </Button>
+                    <Button endIcon={<ExitToAppIcon />} onClick={cerrarSesion} variant="outlined" color="inherit">Cerrar Sesión</Button>
+                    </>
                 ) : (
                     <Button onClick={iniciarSesion} color="inherit">Iniciar Sesión</Button>
                 )}
