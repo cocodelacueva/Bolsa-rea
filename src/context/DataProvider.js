@@ -5,9 +5,9 @@ export const DataContext = React.createContext();
 
 const DataProvider = (props) => {
 
-    const dataUsuario = {uid: null, email: null, estado: null, displayName: null}
+    const dataUsuario = {uid: null, email: null, estado: null, displayName: null, items: null}
     const panelDefault = 'panel_general';
-
+    
     //estados:
     const [usuario, setUsuario] = React.useState(dataUsuario)
     const [simbolos, setSimbolos] = React.useState([]);
@@ -19,24 +19,44 @@ const DataProvider = (props) => {
 
     React.useEffect(() => {
         detectarUsuario()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
 
-    const detectarUsuario = () => {
+    const detectarUsuario = async() => {
         auth.onAuthStateChanged(user => {
             if(user){
-                setUsuario({uid: user.uid, email: user.email, estado: true, displayName: user.displayName});
-                //obtiene los datos de los simbolos
-                obtenerData(panel);
-                //obtiene los datos de los dolares
-                obtenerData('cotizacion_dolares', 'dolares');
+                console.log(user)
+                checkPerfilUser(user);
+
+
             }else{
-                setUsuario({uid: null, email: null, estado: false, displayName: null});
+                setUsuario({uid: null, email: null, estado: false, displayName: null, items: null});
             }
         })
     }
 
+    const checkPerfilUser = async(user) => {
+        
+        //ve si el usuario existe en la bd para traer sus preferencias
+        const usuarioDB = await db.collection('usuarios').doc(user.email).get()
+        
+        if (usuarioDB.exists) {
+            
+            setUsuario(usuarioDB.data());
+            
+        } else {
+            //si no existe lo agrega
+            const nuevoUsuario = {uid: user.uid, email: user.email, estado: true, displayName: user.displayName}
+            db.collection('usuarios').doc(user.email).set(nuevoUsuario);
+
+            setUsuario(nuevoUsuario);
+        }
+
+        //obtiene los datos de los simbolos
+        obtenerData(panel);
+        //obtiene los datos de los dolares
+        obtenerData('cotizacion_dolares', 'dolares');
+    }
 
     const iniciarSesion = async() => {
         try {
@@ -48,6 +68,15 @@ const DataProvider = (props) => {
 
     const cerrarSesion = () => {
         auth.signOut();
+        setUsuario(dataUsuario);
+    }
+
+    //modifica el perfil del usuario, por ejemplo display name, pero tambien cuando se quiere agregar un favorito
+    const modificarPerfilUsuario = async (data) => {
+        const user = usuario;
+
+        await db.collection('usuarios').doc(user.email).update(data)
+        setUsuario(data);
     }
 
     //obtener la data de local host, sino esta en local host hace un fetch a firebase
@@ -124,7 +153,7 @@ const DataProvider = (props) => {
 
     return (
         <DataContext.Provider value={{
-            usuario, iniciarSesion, cerrarSesion, obtenerData, simbolos, panelNombre, simbolosFecha, panel, dolares
+            usuario, iniciarSesion, cerrarSesion, modificarPerfilUsuario, obtenerData, simbolos, panelNombre, simbolosFecha, panel, dolares
         }}>
            {props.children} 
         </DataContext.Provider>

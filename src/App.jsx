@@ -5,6 +5,7 @@ import Simbolos from './components/simbolos'
 import NotFound from './components/notfound'
 import Dolares from './components/dolares'
 import Navbar from './components/navbar'
+import Homepage from './components/homepage'
 import {
   BrowserRouter as Router,
   Switch,
@@ -31,7 +32,7 @@ function App(props) {
         <Navbar />
         <Switch>
           <Route component={Login} path="/login" exact/>
-          <RutaProtegida component={Simbolos} path="/" exact/>
+          <RutaProtegida component={Homepage} path="/" exact/>
           <RutaProtegida component={Simbolos} path="/simbolos" exact/>
           <RutaProtegida component={Dolares} path="/dolares" exact/>
           <Route component={NotFound}/>
