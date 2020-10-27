@@ -39,8 +39,11 @@ function Navbar() {
                     <Button color="inherit">
                         <Link to="/simbolos">Acciones</Link>
                     </Button>
-                    <Button color="inherit" className={classes.mright}>
+                    <Button color="inherit">
                         <Link to="/dolares">Dolares</Link>
+                    </Button>
+                    <Button color="inherit" className={classes.mright}>
+                        <Link to="/monedas">Monedas</Link>
                     </Button>
                     <Button endIcon={<ExitToAppIcon />} onClick={cerrarSesion} variant="outlined" color="inherit">Cerrar Sesión</Button>
                     </>

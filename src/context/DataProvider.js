@@ -15,6 +15,7 @@ const DataProvider = (props) => {
     const [panelNombre, setPanelNombre] = React.useState(null);//es para escribir el nombre del panel
     const [simbolosFecha, setSimbolosFecha] = React.useState(null);
     const [dolares, setDolares] = React.useState(null);
+    const [monedasDigitales, setmonedasDigitales] = React.useState(null);
 
 
     React.useEffect(() => {
