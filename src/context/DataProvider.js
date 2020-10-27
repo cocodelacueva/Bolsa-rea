@@ -5,7 +5,7 @@ export const DataContext = React.createContext();
 
 const DataProvider = (props) => {
 
-    const dataUsuario = {uid: null, email: null, estado: null, displayName: null, items: null}
+    const dataUsuario = {uid: null, email: null, estado: null, displayName: null, preferences: null}
     const panelDefault = 'panel_general';
     
     //estados:
@@ -26,12 +26,11 @@ const DataProvider = (props) => {
     const detectarUsuario = async() => {
         auth.onAuthStateChanged(user => {
             if(user){
-                console.log(user)
+                
                 checkPerfilUser(user);
 
-
             }else{
-                setUsuario({uid: null, email: null, estado: false, displayName: null, items: null});
+                setUsuario({uid: null, email: null, estado: false, displayName: null, preferences: null});
             }
         })
     }

@@ -11,6 +11,9 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2),
         marginTop: theme.spacing(2),
         marginBottom: theme.spacing(4),
+    },
+    strongWeigth: {
+        fontWeight: 700,
     }
   }));
 
@@ -20,7 +23,6 @@ function Homepage() {
     
     const { usuario, modificarPerfilUsuario } = React.useContext(DataContext);
 
-    console.log(usuario);
     //estados
     const [editarPerfil, setEditarPerfil ] = React.useState(false);
     const [newDisplayName, setNewDisplayName] = React.useState(usuario.displayName);
@@ -71,11 +73,23 @@ function Homepage() {
                     ) : null
                 }
 
+                { !usuario.preferences || usuario.preferences === null ? (
                 <Grid item xs={12}>
-                    <Typography variant='body1' gutterBottom>
-                        Esta es su sección personalizada. Para modificarla, haga click en Mi configuración
+                    <Typography variant='body1'>
+                        Esta es su sección personalizada. Para modificarla, haga click en <strong className={classes.strongWeigth}>Mi configuración</strong>.
                     </Typography>
-                </Grid>
+                    <Typography variant='body1'>
+                        Además, es posible agregar acciones, dolares e incluso monedas digitales en esta sección para visualizarlas de inmediato.
+                    </Typography>
+                    <Typography variant='body1'>
+                        Visitando cada sección, desde el navbar, puede ver un boton en cada elemento para agregarlo como favorito y asi aparece en este sector.
+                    </Typography>
+                    <Typography variant='body1' gutterBottom>
+                        De esta manera puede hacer seguimiento, de las cotizaciones de su interes.
+                    </Typography>
+                </Grid> 
+                ) : null
+                }
             </Grid>
             
            
