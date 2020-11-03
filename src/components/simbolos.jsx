@@ -38,11 +38,19 @@ function Simbolos() {
     //estilos
     const classes = useStyles();
     //contexto
-    const { usuario, cotizaciones, obtenerArrayData } = React.useContext(DataContext);
+    const { cotizaciones, obtenerArrayData } = React.useContext(DataContext);
     //estados
-    const [panelSelec, setpanelSelec] = React.useState('none');
+    const [panelSelec, setpanelSelec] = React.useState('panel_general');
     const [simboloElegido, setsimboloElegido] = React.useState(null);
    
+    React.useEffect(() => {
+        
+        if (cotizaciones==null) {
+            obtenerArrayData(panelSelec, new Date().toJSON().slice(0, 10), 'cotizaciones');
+        }
+        
+    }, [cotizaciones])
+
 
     //funciones
     const handleChange = (event) => {
@@ -57,14 +65,14 @@ function Simbolos() {
     };
 
     const clickInSymbol = (index) => {
-        debugger;
+        
         setsimboloElegido(cotizaciones.titulos[index]);
 
         window.scrollTo(0, 0);
         
     }
 
-    return usuario.estado ? (
+    return (
             <div className={classes.wrapperSimbolos}>
                 <Container maxWidth="lg">
                     
@@ -80,7 +88,6 @@ function Simbolos() {
                                 onChange={handleChange}
                                 label='Panel'
                                 >
-                                    <MenuItem value="none">Seleccionar Panel</MenuItem>
                                     <MenuItem value="panel_general">Panel General</MenuItem>
                                     <MenuItem value="panel_cedears">CEDEARs</MenuItem>
                                 </Select>
@@ -113,7 +120,7 @@ function Simbolos() {
                     </Grid>
                 </Container>
             </div>
-        ) : null
+        )
 }
 
 export default Simbolos;
