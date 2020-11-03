@@ -38,24 +38,27 @@ function Simbolos() {
     //estilos
     const classes = useStyles();
     //contexto
-    const { usuario, simbolos, panelNombre, simbolosFecha, obtenerData, panel } = React.useContext(DataContext);
+    const { usuario, cotizaciones, obtenerArrayData } = React.useContext(DataContext);
     //estados
-    const [panelSelec, setpanelSelec] = React.useState(panel);
+    const [panelSelec, setpanelSelec] = React.useState('none');
     const [simboloElegido, setsimboloElegido] = React.useState(null);
+   
 
     //funciones
     const handleChange = (event) => {
         const nuevoPanel = event.target.value;
         setpanelSelec(nuevoPanel);
-        
-        obtenerData(nuevoPanel);
 
-        setsimboloElegido(null);
+        if (nuevoPanel !== 'none') {
+            obtenerArrayData(nuevoPanel, new Date().toJSON().slice(0, 10), 'cotizaciones');
+            setsimboloElegido(null);
+        }
+    
     };
 
     const clickInSymbol = (index) => {
-        
-        setsimboloElegido(simbolos[index]);
+        debugger;
+        setsimboloElegido(cotizaciones.titulos[index]);
 
         window.scrollTo(0, 0);
         
@@ -75,8 +78,9 @@ function Simbolos() {
                                 id="demo-simple-select-outlined"
                                 value={panelSelec}
                                 onChange={handleChange}
-                                label="panel"
+                                label='Panel'
                                 >
+                                    <MenuItem value="none">Seleccionar Panel</MenuItem>
                                     <MenuItem value="panel_general">Panel General</MenuItem>
                                     <MenuItem value="panel_cedears">CEDEARs</MenuItem>
                                 </Select>
@@ -89,21 +93,21 @@ function Simbolos() {
 
                         <Grid item xs={12} sm={5}>
                             <Typography variant="h2" gutterBottom>
-                                {panelNombre}
+                                {cotizaciones ? cotizaciones.name_panel : null}
                             </Typography>
                             <Typography variant="body1" gutterBottom>
-                                Fecha: {simbolosFecha}
+                                {cotizaciones ? ('Fecha: ' + cotizaciones.date) : null}
                             </Typography>
                             
                             <List aria-label="simbolos">
-                                {simbolos.map((simbolo, index) => (
+                                {cotizaciones ? cotizaciones.titulos.map((simbolo, index) => (
                                     <ListItem button key={simbolo.simbolo} onClick={() => {clickInSymbol(index)}}>
                                         <ListItemText className={simbolo.tendencia==='baja' ? classes.colorRed : simbolo.tendencia === 'sube' ? classes.colorGreen : null}>
                                             {simbolo.simbolo} - AR$ {simbolo.ultimoPrecio}  
                                             { simbolo.tendencia === 'baja' ? <ArrowDownwardIcon className={classes.svgSize} /> : simbolo.tendencia === 'sube' ? <ArrowUpwardIcon className={classes.svgSize} /> : null}
                                         </ListItemText>
                                     </ListItem>
-                                ))}
+                                )) : null}
                             </List>
                         </Grid>
                     </Grid>

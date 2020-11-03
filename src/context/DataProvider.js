@@ -6,23 +6,22 @@ export const DataContext = React.createContext();
 const DataProvider = (props) => {
 
     const dataUsuario = {uid: null, email: null, estado: null, displayName: null, preferences: null}
-    const panelDefault = 'panel_general';
     
     //estados:
     const [usuario, setUsuario] = React.useState(dataUsuario)
-    const [simbolos, setSimbolos] = React.useState([]);
-    const [panel, setPanel] = React.useState(panelDefault);
-    const [panelNombre, setPanelNombre] = React.useState(null);//es para escribir el nombre del panel
-    const [simbolosFecha, setSimbolosFecha] = React.useState(null);
+    const [cotizaciones, setCotizaciones] = React.useState(null);
     const [dolares, setDolares] = React.useState(null);
     const [monedasDigitales, setmonedasDigitales] = React.useState(null);
-
 
     React.useEffect(() => {
         detectarUsuario()
     }, []);
 
 
+
+    /*
+     * USUARIO
+    */
     const detectarUsuario = async() => {
         auth.onAuthStateChanged(user => {
             if(user){
@@ -51,11 +50,7 @@ const DataProvider = (props) => {
 
             setUsuario(nuevoUsuario);
         }
-
-        //obtiene los datos de los simbolos
-        obtenerData(panel);
-        //obtiene los datos de los dolares
-        obtenerData('cotizacion_dolares', 'dolares');
+        
     }
 
     const iniciarSesion = async() => {
@@ -79,81 +74,107 @@ const DataProvider = (props) => {
         setUsuario(data);
     }
 
-    //obtener la data de local host, sino esta en local host hace un fetch a firebase
-    const obtenerData = async ( panelToFetch='panel_general', obdata='simbolos' ) => {
-        
-        if (obdata === 'simbolos') {
-            setPanel(panelToFetch);
-        }
+
+    /*
+     * DATOS
+    */
+    //obtener la data de las colecciones de a un documento a la vez
+    //por defecto hay que pasar la coleccion a buscar y la fecha
+    // con estas variables se guarda en localhost
+    // sino esta en local host hace un fetch a firebase desde el ultimo
+    const obtenerArrayData = async ( coleccion, fecha, estado ) => {
         
         //busca en localhost
-        let oldData = localStorage.getItem(panelToFetch);
+        let oldData = localStorage.getItem(coleccion+'_'+fecha);
 
         if ( oldData ) {
-            //chequeamos si es muy vieja y hacemos un nuevo fetch
+            //chequeamos si la fecha es hoy, chequeamos que la info no es mayor a 30 minutos y si lo es hacemos un nuevo fetch
 
             oldData = JSON.parse(oldData)
-            const now = new Date()
+            const now = new Date();
             // compare the expiry time of the item with the current time
-            if (now.getTime() > oldData.expiry) {
+            if (now.toJSON().slice(0, 10) !== fecha && now.getTime() > oldData.expiry) {
+                console.log('es muy viejo para ser de la misma fecha');
                 // If the item is expired, delete the item from storage
-                localStorage.removeItem(panelToFetch);
+                localStorage.removeItem(coleccion+'_'+fecha);
                 // and fetchdata
-                fetchData(panelToFetch, obdata);
-            } else {
-                //si esta fresca retornamos:
-                if (obdata === 'simbolos') {
-                    //seteamos estados
-                    setSimbolos(oldData.value.titulos);
-                    setSimbolosFecha(oldData.value.date);
-                    setPanelNombre(oldData.value.name_panel);
-                } else {
-                    setDolares(oldData.value);
+                const dataDB = await fetchData(true, coleccion, fecha);
+                console.log(dataDB)
+
+                //guardamos en localhost
+                const now = new Date();
+                const item = {
+                    value: dataDB[0],
+                    expiry: now.getTime() + 1000*60*30,
                 }
-                
+                localStorage.setItem(coleccion+'_'+(new Date().toJSON().slice(0, 10)), JSON.stringify(item));
+
+                //seteamos los estados
+                if (estado === 'cotizaciones') {
+                    debugger;
+                    setCotizaciones(dataDB[0]);
+                } else if ( estado === 'dolares' ) {
+                    setDolares(dataDB[0]);
+                } else if ( estado === 'monedas_digitales' ) {
+                    setmonedasDigitales(dataDB[0])
+                }
+            } else {
+                //si esta fresca retornamos estado:
+                if (estado === 'cotizaciones') {
+                    setCotizaciones(oldData.value);
+                } else if ( estado === 'dolares' ) {
+                    setDolares(oldData.value);
+                } else if ( estado === 'monedas_digitales' ) {
+                    setmonedasDigitales(oldData.value)
+                }
             }
 
         } else {
             //no esta en localhost, obtenemos la data
-            fetchData(panelToFetch, obdata);
-        }
-    
-    }
-
-    const fetchData = async ( panel, tofetch ) => {
-       
-        try {  
-            const doc = await db.collection('cotizaciones').doc(panel).get();   
-            const data = doc.data();
-  
-            if (tofetch === 'simbolos') {
-                //seteamos estados
-                setSimbolos(data.titulos);
-                setSimbolosFecha(data.date);
-                setPanelNombre(data.name_panel);
-            } else {
-                
-                setDolares(data);
-            }
-            
+            const dataDB = await fetchData(true, coleccion);
 
             //guardamos en localhost
             const now = new Date();
             const item = {
-                value: data,
-                expiry: now.getTime() + 1000*60*60,
+                value:  dataDB[0],
+                expiry: now.getTime() + 1000*60*30,
             }
-            localStorage.setItem(panel, JSON.stringify(item));
+            localStorage.setItem(coleccion+'_'+(new Date().toJSON().slice(0, 10)), JSON.stringify(item));
+
+            //seteamos los estados
+            if (estado === 'cotizaciones') {
+                setCotizaciones(dataDB[0]);
+            } else if ( estado === 'dolares' ) {
+                setDolares(dataDB[0]);
+            } else if ( estado === 'monedas_digitales' ) {
+                setmonedasDigitales(dataDB[0])
+            }
+        }
     
-          } catch (error) {
+    }
+
+    const fetchData = async ( multiple=false, coleccion, where=false, limit=1, ) => {
+       
+        try {  
+            if (multiple) {
+                const data = await db.collection(coleccion).orderBy("date", "desc").limit(limit).get();        
+                const arrayData = data.docs.map(doc => ( doc.data() ));
+                return arrayData;
+            } else {
+                //si la busqueda no es multiple, busca algo específico, debe definir where
+
+            }
+            
+    
+        } catch (error) {
             console.log(error);
-          }
+        }
     };
 
 
     return (
         <DataContext.Provider value={{
-            usuario, iniciarSesion, cerrarSesion, modificarPerfilUsuario, obtenerData, simbolos, panelNombre, simbolosFecha, panel, dolares
+            usuario, iniciarSesion, cerrarSesion, modificarPerfilUsuario, obtenerArrayData, cotizaciones, monedasDigitales, dolares
         }}>
            {props.children} 
         </DataContext.Provider>
