@@ -16,19 +16,17 @@ function Dolares() {
     const classes = useStyles();
 
     //contexto
-    const { dolares } = React.useContext(DataContext);
-
-    //estados
-    const [fecha, setFecha] = React.useState(false);
-    const [cotizacionesDolares, setCotizacionesDolares] = React.useState([]);
+    const { dolares, obtenerArrayData } = React.useContext(DataContext);
 
     React.useEffect(() => {
-        if (dolares != null) {
-            setCotizacionesDolares(dolares.valores);
-            setFecha(dolares.date);
+        
+        if (dolares==null) {
+            obtenerArrayData('cotizacion_dolares', new Date().toJSON().slice(0, 10), 'dolares');
         }
         
     }, [dolares])
+
+    
 
     return (
         <div className={classes.wrapperSimbolos}>
@@ -37,11 +35,11 @@ function Dolares() {
                         Cotización del dolar
                     </Typography>
 
-                    {fecha ? ( 'Fecha: ' + fecha ) : null}
+                    {dolares ? ( 'Fecha: ' + dolares.date ) : null}
 
                     {
                         <List>
-                            {cotizacionesDolares.map((cotizacion) => (
+                            {dolares ? dolares.valores.map((cotizacion) => (
                                 <ListItem button key={cotizacion.slug}>
                                      <Grid container>
                                         <Grid item xs={12}>
@@ -63,7 +61,7 @@ function Dolares() {
                                         </Grid>
                                     </Grid>
                                 </ListItem>
-                            ))}
+                            )) : null}
                         </List>
                        
                     }
