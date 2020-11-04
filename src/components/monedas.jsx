@@ -78,7 +78,7 @@ const MonedasDigitales = () => {
                             
                             <ListItem className={classes.w33} button key={index}>
                                 <IconButton className={classes.mr10} aria-label="Bockmark" size="small" onClick={() => {handleBookMark(index)}}>
-                                    {usuario.preferencias['monedasDigitales'] && usuario.preferencias['monedasDigitales'].includes(cotizacion.simbol) ? <TurnedIn fontSize="inherit" /> :  
+                                    {usuario.preferencias && usuario.preferencias['monedasDigitales'] && usuario.preferencias['monedasDigitales'].includes(cotizacion.simbol) ? <TurnedIn fontSize="inherit" /> :  
                                     <TurnedInNot fontSize="inherit" />}
                                 </IconButton>
                                 <ListItemText>

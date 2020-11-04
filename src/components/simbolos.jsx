@@ -130,7 +130,7 @@ function Simbolos() {
                                 {cotizaciones ? cotizaciones.titulos.map((simbolo, index) => (
                                     <ListItem button key={index}>
                                         <IconButton className={classes.mr10} aria-label="Bockmark" size="small" onClick={() => {handleBookMark(index)}}>
-                                            {usuario.preferencias[panelSelec] && usuario.preferencias[panelSelec].includes(simbolo.simbolo) ? <TurnedIn fontSize="inherit" /> :  
+                                            {usuario.preferencias && usuario.preferencias[panelSelec] && usuario.preferencias[panelSelec].includes(simbolo.simbolo) ? <TurnedIn fontSize="inherit" /> :  
                                             <TurnedInNot fontSize="inherit" />}
                                         </IconButton>
                                         <ListItemText onClick={() => {clickInSymbol(index)}} className={simbolo.tendencia==='baja' ? classes.colorRed : simbolo.tendencia === 'sube' ? classes.colorGreen : null}>

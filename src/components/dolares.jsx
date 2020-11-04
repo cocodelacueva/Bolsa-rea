@@ -67,7 +67,7 @@ function Dolares() {
                                      <Grid container>
                                         <Grid item xs={12}>
                                         <IconButton className={classes.mr10} aria-label="Bockmark" size="small" onClick={() => {handleBookMark(index)}}>
-                                            {usuario.preferencias['dolares'] && usuario.preferencias['dolares'].includes(cotizacion.slug) ? <TurnedIn fontSize="inherit" /> :  
+                                            {usuario.preferencias && usuario.preferencias['dolares'] && usuario.preferencias['dolares'].includes(cotizacion.slug) ? <TurnedIn fontSize="inherit" /> :  
                                             <TurnedInNot fontSize="inherit" />}
                                         </IconButton>
                                             <ListItemText>
