@@ -1,9 +1,11 @@
 import React from 'react';
 import Simbolo from './simbolo-detalle';
 import { DataContext } from '../context/DataProvider';
-import { makeStyles, ListItemText, ListItem, List, Typography, InputLabel, MenuItem, FormControl, Select, Container, Grid } from '@material-ui/core/';
+import { makeStyles, ListItemText, ListItem, List, Typography, InputLabel, MenuItem, FormControl, Select, Container, Grid, IconButton } from '@material-ui/core/';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import TurnedIn from '@material-ui/icons/TurnedIn';
+import TurnedInNot from '@material-ui/icons/TurnedInNot';
 
 const useStyles = makeStyles((theme) => ({
     wrapperSimbolos : {
@@ -29,6 +31,9 @@ const useStyles = makeStyles((theme) => ({
     svgSize : {
         fontSize: '1rem', 
         marginLeft: '1rem'
+    },
+    mr10: {
+        marginRight: '1rem'
     }
     
   }));
@@ -38,9 +43,8 @@ function Simbolos() {
     //estilos
     const classes = useStyles();
     //contexto
-    const { cotizaciones, obtenerArrayData } = React.useContext(DataContext);
-    //estados
-    const [panelSelec, setpanelSelec] = React.useState('panel_general');
+    const { usuario, updatePreferenciaUsuario, cotizaciones, obtenerArrayData, panelSelec, definePanelAcciones } = React.useContext(DataContext);
+    //Estados
     const [simboloElegido, setsimboloElegido] = React.useState(null);
    
     React.useEffect(() => {
@@ -49,19 +53,15 @@ function Simbolos() {
             obtenerArrayData(panelSelec, new Date().toJSON().slice(0, 10), 'cotizaciones');
         }
         
-    }, [cotizaciones])
+    }, [cotizaciones, obtenerArrayData, panelSelec])
 
 
     //funciones
     const handleChange = (event) => {
         const nuevoPanel = event.target.value;
-        setpanelSelec(nuevoPanel);
-
-        if (nuevoPanel !== 'none') {
-            obtenerArrayData(nuevoPanel, new Date().toJSON().slice(0, 10), 'cotizaciones');
-            setsimboloElegido(null);
-        }
-    
+        definePanelAcciones(nuevoPanel);
+        obtenerArrayData(nuevoPanel, new Date().toJSON().slice(0, 10), 'cotizaciones');
+        setsimboloElegido(null);
     };
 
     const clickInSymbol = (index) => {
@@ -70,6 +70,26 @@ function Simbolos() {
 
         window.scrollTo(0, 0);
         
+    }
+
+    const handleBookMark = (index) => {
+        const preferencias = usuario.preferencias ? usuario.preferencias : {};
+        const simbolo = cotizaciones.titulos[index].simbolo;
+
+        //busca si existe la preferencia, sino la crea
+        if (preferencias[panelSelec]) {
+
+            //busca si ya esta dentro, si esta la quita
+            if ( preferencias[panelSelec].includes(simbolo) ) {
+                preferencias[panelSelec] = preferencias[panelSelec].filter(el => el !== simbolo)
+            } else {
+                preferencias[panelSelec] = [...preferencias[panelSelec], simbolo] 
+            }
+            
+        } else {
+            preferencias[panelSelec] = [simbolo]
+        } 
+        updatePreferenciaUsuario(preferencias);
     }
 
     return (
@@ -108,8 +128,13 @@ function Simbolos() {
                             
                             <List aria-label="simbolos">
                                 {cotizaciones ? cotizaciones.titulos.map((simbolo, index) => (
-                                    <ListItem button key={simbolo.simbolo} onClick={() => {clickInSymbol(index)}}>
-                                        <ListItemText className={simbolo.tendencia==='baja' ? classes.colorRed : simbolo.tendencia === 'sube' ? classes.colorGreen : null}>
+                                    <ListItem button key={index}>
+                                        <IconButton className={classes.mr10} aria-label="Bockmark" size="small" onClick={() => {handleBookMark(index)}}>
+                                            {usuario.preferencias[panelSelec] && usuario.preferencias[panelSelec].includes(simbolo.simbolo) ? <TurnedIn fontSize="inherit" /> :  
+                                            <TurnedInNot fontSize="inherit" />}
+                                        </IconButton>
+                                        <ListItemText onClick={() => {clickInSymbol(index)}} className={simbolo.tendencia==='baja' ? classes.colorRed : simbolo.tendencia === 'sube' ? classes.colorGreen : null}>
+                                            
                                             {simbolo.simbolo} - AR$ {simbolo.ultimoPrecio}  
                                             { simbolo.tendencia === 'baja' ? <ArrowDownwardIcon className={classes.svgSize} /> : simbolo.tendencia === 'sube' ? <ArrowUpwardIcon className={classes.svgSize} /> : null}
                                         </ListItemText>

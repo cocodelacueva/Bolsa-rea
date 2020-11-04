@@ -1,6 +1,8 @@
 import React from 'react';
 import { DataContext } from '../context/DataProvider';
-import { makeStyles, Container, Typography, List, ListItem, ListItemText, Grid } from '@material-ui/core/';
+import { makeStyles, Container, Typography, List, ListItem, ListItemText, Grid, IconButton } from '@material-ui/core/';
+import TurnedIn from '@material-ui/icons/TurnedIn';
+import TurnedInNot from '@material-ui/icons/TurnedInNot';
 
 const useStyles = makeStyles((theme) => ({
     wrapperSimbolos : {
@@ -8,6 +10,9 @@ const useStyles = makeStyles((theme) => ({
     },
     strong : {
         fontWeight: 700,
+    },
+    mr10: {
+        marginRight: '1rem'
     }
 }));
 
@@ -16,7 +21,7 @@ function Dolares() {
     const classes = useStyles();
 
     //contexto
-    const { dolares, obtenerArrayData } = React.useContext(DataContext);
+    const { usuario, updatePreferenciaUsuario, dolares, obtenerArrayData } = React.useContext(DataContext);
 
     React.useEffect(() => {
         
@@ -26,7 +31,25 @@ function Dolares() {
         
     }, [dolares, obtenerArrayData])
 
-    
+    const handleBookMark = (index) => {
+        const preferencias = usuario.preferencias ? usuario.preferencias : {};
+        const simbolo = dolares.valores[index].slug;
+
+        //busca si existe la preferencia, sino la crea
+        if (preferencias['dolares']) {
+
+            //busca si ya esta dentro, si esta la quita
+            if ( preferencias['dolares'].includes(simbolo) ) {
+                preferencias['dolares'] = preferencias['dolares'].filter(el => el !== simbolo)
+            } else {
+                preferencias['dolares'] = [...preferencias['dolares'], simbolo] 
+            }
+            
+        } else {
+            preferencias['dolares'] = [simbolo]
+        } 
+        updatePreferenciaUsuario(preferencias);
+    }    
 
     return (
         <div className={classes.wrapperSimbolos}>
@@ -43,6 +66,10 @@ function Dolares() {
                                 <ListItem button key={index}>
                                      <Grid container>
                                         <Grid item xs={12}>
+                                        <IconButton className={classes.mr10} aria-label="Bockmark" size="small" onClick={() => {handleBookMark(index)}}>
+                                            {usuario.preferencias['dolares'] && usuario.preferencias['dolares'].includes(cotizacion.slug) ? <TurnedIn fontSize="inherit" /> :  
+                                            <TurnedInNot fontSize="inherit" />}
+                                        </IconButton>
                                             <ListItemText>
                                                 <Typography variant="h5" gutterBottom>
                                                     {cotizacion.nombre}:

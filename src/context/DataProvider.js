@@ -12,6 +12,7 @@ const DataProvider = (props) => {
     const [cotizaciones, setCotizaciones] = React.useState(null);
     const [dolares, setDolares] = React.useState(null);
     const [monedasDigitales, setmonedasDigitales] = React.useState(null);
+    const [panelSelec, setpanelSelec] = React.useState('panel_general');
 
     React.useEffect(() => {
         detectarUsuario()
@@ -72,6 +73,19 @@ const DataProvider = (props) => {
 
         await db.collection('usuarios').doc(user.email).update(data)
         setUsuario(data);
+    }
+
+    //modifica el perfil del usuario, por ejemplo display name, pero tambien cuando se quiere agregar un favorito
+    const updatePreferenciaUsuario = async (nuevasPreferencias) => {
+        const user = usuario;
+
+        const usuarioModificado = {
+            ...usuario,
+            preferencias: nuevasPreferencias
+        }
+
+        await db.collection('usuarios').doc(user.email).update(usuarioModificado)
+        setUsuario(usuarioModificado);
     }
 
 
@@ -153,6 +167,10 @@ const DataProvider = (props) => {
     
     }
 
+    const definePanelAcciones = (panel) => {
+        setpanelSelec(panel);
+    }
+
     const fetchData = async ( multiple=false, coleccion, where=false, limit=1, ) => {
        
         try {  
@@ -174,7 +192,7 @@ const DataProvider = (props) => {
 
     return (
         <DataContext.Provider value={{
-            usuario, iniciarSesion, cerrarSesion, modificarPerfilUsuario, obtenerArrayData, cotizaciones, monedasDigitales, dolares
+            usuario, iniciarSesion, cerrarSesion, modificarPerfilUsuario, updatePreferenciaUsuario, panelSelec, definePanelAcciones, obtenerArrayData, cotizaciones, monedasDigitales, dolares
         }}>
            {props.children} 
         </DataContext.Provider>
