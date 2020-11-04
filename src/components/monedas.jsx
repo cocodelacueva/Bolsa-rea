@@ -33,7 +33,7 @@ const MonedasDigitales = () => {
             obtenerArrayData('cotizacion_monedas_digitales', new Date().toJSON().slice(0, 10), 'monedas_digitales');
         }
         
-    }, [monedasDigitales])
+    }, [monedasDigitales, obtenerArrayData])
 
 
     return (
@@ -48,9 +48,9 @@ const MonedasDigitales = () => {
                 
                 
                     <List className={classes.flexD}>
-                        {monedasDigitales ? monedasDigitales.valores.map((cotizacion) => (
+                        {monedasDigitales ? monedasDigitales.valores.map((cotizacion, index) => (
                             
-                            <ListItem className={classes.w33} button key={cotizacion.simbol}>
+                            <ListItem className={classes.w33} button key={index}>
                                 <ListItemText>
                                     <Typography variant="h5" gutterBottom>
                                         {cotizacion.simbol}:

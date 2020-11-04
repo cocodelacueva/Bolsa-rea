@@ -24,7 +24,7 @@ function Dolares() {
             obtenerArrayData('cotizacion_dolares', new Date().toJSON().slice(0, 10), 'dolares');
         }
         
-    }, [dolares])
+    }, [dolares, obtenerArrayData])
 
     
 
@@ -39,8 +39,8 @@ function Dolares() {
 
                     {
                         <List>
-                            {dolares ? dolares.valores.map((cotizacion) => (
-                                <ListItem button key={cotizacion.slug}>
+                            {dolares ? dolares.valores.map((cotizacion, index) => (
+                                <ListItem button key={index}>
                                      <Grid container>
                                         <Grid item xs={12}>
                                             <ListItemText>
