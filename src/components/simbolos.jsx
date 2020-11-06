@@ -114,7 +114,7 @@ function Simbolos() {
                             </FormControl>
 
                             {
-                                simboloElegido != null ? <Simbolo simbolo={simboloElegido} /> : null
+                                simboloElegido != null ? <Simbolo panel={panelSelec} simbolo={simboloElegido} /> : null
                             }
                         </Grid>
 
