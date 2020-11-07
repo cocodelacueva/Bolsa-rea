@@ -50,7 +50,7 @@ function Simbolos() {
     React.useEffect(() => {
         
         if (cotizaciones==null) {
-            obtenerArrayData(panelSelec, new Date().toJSON().slice(0, 10), 'cotizaciones');
+            obtenerArrayData(panelSelec, new Date().toJSON().slice(0, 10));
         }
         
     }, [cotizaciones, obtenerArrayData, panelSelec])
@@ -60,7 +60,7 @@ function Simbolos() {
     const handleChange = (event) => {
         const nuevoPanel = event.target.value;
         definePanelAcciones(nuevoPanel);
-        obtenerArrayData(nuevoPanel, new Date().toJSON().slice(0, 10), 'cotizaciones');
+        obtenerArrayData(nuevoPanel, new Date().toJSON().slice(0, 10));
         setsimboloElegido(null);
     };
 

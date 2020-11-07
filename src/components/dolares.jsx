@@ -26,7 +26,7 @@ function Dolares() {
     React.useEffect(() => {
         
         if (dolares==null) {
-            obtenerArrayData('cotizacion_dolares', new Date().toJSON().slice(0, 10), 'dolares');
+            obtenerArrayData('cotizacion_dolares', new Date().toJSON().slice(0, 10));
         }
         
     }, [dolares, obtenerArrayData])

@@ -35,7 +35,7 @@ const MonedasDigitales = () => {
     React.useEffect(() => {
         
         if (monedasDigitales==null) {
-            obtenerArrayData('cotizacion_monedas_digitales', new Date().toJSON().slice(0, 10), 'monedas_digitales');
+            obtenerArrayData('cotizacion_monedas_digitales', new Date().toJSON().slice(0, 10));
         }
         
     }, [monedasDigitales, obtenerArrayData])
