@@ -124,7 +124,7 @@ function Simbolo(props) {
             
             { grafico ? (
                 <Paper>
-                    <SimboloGrafico simbolo={simbolo} panel={props.panel} />
+                    <SimboloGrafico simbolos={[simbolo.simbolo]} panel={props.panel} />
                 </Paper>
             ) : null }
 
